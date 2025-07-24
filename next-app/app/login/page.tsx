@@ -2,37 +2,44 @@
 
 import { useRouter } from "next/navigation";
 import { SyntheticEvent, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { setAuth, setUser } = useAuth();
 
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setError("");
-
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include", // Needed to store cookies
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch("/api/login", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.message || "Login failed");
-        return;
+      if (res.ok) {
+        const content = await res.json();
+
+        console.log(content);
+        
+
+
+        setUser(content.user);
+        setAuth(true);
+        router.push("/");
+      } else {
+        setAuth(false);
+        setUser(null);
       }
-
-      // Navigate if login is successful
-      router.push("/");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login error:", err);
       setError("Something went wrong.");
     }

@@ -10,7 +10,6 @@ class InjectJwtFromCookieMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // dd($jwt = $request->cookie('jwt'));
         if($jwt = $request->cookie('jwt') ){
             $request->headers->set('Authorization', 'Bearer ' . $jwt);
         }

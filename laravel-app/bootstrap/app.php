@@ -14,7 +14,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(InjectJwtFromCookieMiddleware::class);
-        // $middleware->append(ApiAuthenticate::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
